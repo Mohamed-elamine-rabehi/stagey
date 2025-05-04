@@ -1,46 +1,25 @@
-/** @format */
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import ExpressError from '../domain/Error';
 
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import prisma from "../prisma/client";
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-interface TokenPayload {
-  id: number;
-  role: "user" | "company";
-}
+export const authMiddleware = (role?: 'user' | 'company') => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) throw new ExpressError('Authentication required', 401);
 
-export const authenticate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "No token provided" });
-  }
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      req.user = decoded;
 
-  const token = authHeader.split(" ")[1];
+      if (role && decoded.role !== role) {
+        throw new ExpressError('Unauthorized access', 403);
+      }
 
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "secret"
-    ) as TokenPayload;
-
-    if (decoded.role === "user") {
-      const user = await prisma.user.findUnique({ where: { id: decoded.id } });
-      if (!user) return res.status(401).json({ error: "Invalid token" });
-      req.user = { ...user, role: "user" };
-    } else {
-      const company = await prisma.company.findUnique({
-        where: { id: decoded.id },
-      });
-      if (!company) return res.status(401).json({ error: "Invalid token" });
-      req.user = { ...company, role: "company" };
+      next();
+    } catch (error) {
+      throw new ExpressError('Invalid token', 401);
     }
-
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: "Invalid or expired token" });
-  }
+  };
 };
