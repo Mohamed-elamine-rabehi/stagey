@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
-    "build": "tsc",
-    "start": "tsc && node dist/index.js",
+    "build": "npx prisma generate && tsc",
+    "start": "npm run build && node dist/index.js",
+    "postinstall": "npx prisma generate",
     "pull:db": "prisma db pull",
     "migrate:reset": "prisma migrate reset",
     "migrate:new": "prisma migrate dev",
