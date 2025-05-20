@@ -95,10 +95,23 @@ export class PostService {
   static async createPost(companyId: number, input: PostCrudInput) {
     const post = await prisma.post.create({
       data: {
-        ...input,
-        longitude: input.location.longitude,
-        latitude: input.location.latitude,
-        companyId,
+        title: input.title,
+        description: input.description,
+        startDate: input.startDate,
+        endDate: input.endDate,
+        longitude: input.location.longitude, // Extract longitude from the location object
+        latitude: input.location.latitude,   // Extract latitude from the location object
+        specialty: input.specialty,
+        educationLevel: input.educationLevel,
+        skills: input.skills,
+        // Connect the post to the company using the 'company' relation
+        company: {
+          connect: {
+            id: companyId, // Use the companyId obtained from the authenticated user
+          },
+        },
+        // Remove companyId here, as 'connect' handles the relation
+        // Also removed ...input spread to be explicit about fields and avoid conflict with location
       },
     });
 
@@ -107,6 +120,7 @@ export class PostService {
 
     return post;
   }
+
 
   static async updatePost(
     postId: number,
