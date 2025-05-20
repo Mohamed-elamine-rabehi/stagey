@@ -150,4 +150,33 @@ export class PostService {
 
     await prisma.post.delete({ where: { id: postId } });
   }
+  static async fetchPostsByCompanyId(companyId: number, page: number = 1) {
+    const skip = (page - 1) * this.PAGE_SIZE;
+
+    const [posts, totalCount] = await Promise.all([
+      prisma.post.findMany({
+        where: {
+          companyId: companyId, // <-- Filter by company ID
+        },
+        skip,
+        take: this.PAGE_SIZE,
+        orderBy: { createdAt: "desc" },
+        include: { company: true }, // Include company details if needed on frontend
+      }),
+      prisma.post.count({
+        where: {
+          companyId: companyId,
+        },
+      }),
+    ]);
+
+    return {
+      posts,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / this.PAGE_SIZE),
+        totalItems: totalCount,
+      },
+    };
+  }
 }

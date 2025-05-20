@@ -108,4 +108,16 @@ export class PostController {
     await PostService.deletePost(postId, companyId);
     res.status(204).send();
   }
+  static async fetchCompanyPosts(req: Request, res: Response) {
+    const companyId = (req.user as any).user.id; // Get companyId from authenticated user
+
+    // Get page from query parameters, default to 1 if not provided
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    if (isNaN(page) || page < 1) {
+      throw new ExpressError("Invalid page number", 400);
+    }
+
+    res.json(await PostService.fetchPostsByCompanyId(companyId, page));
+  }
+
 }

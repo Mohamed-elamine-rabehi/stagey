@@ -14,5 +14,6 @@ router.get('/:postId/company', PostController.getPostWithCompany);
 router.post('/', authMiddleware('company'), PostController.createPost);
 router.put('/:postId', authMiddleware('company'), PostController.updatePost);
 router.delete('/:postId', authMiddleware('company'), PostController.deletePost);
-
+// New route for fetching posts by the authenticated company
+router.get('/company/posts', authMiddleware('company'), PostController.fetchCompanyPosts);
 export default router;
