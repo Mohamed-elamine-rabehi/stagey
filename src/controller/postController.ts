@@ -50,7 +50,7 @@ export class PostController {
   }
 
   static async createPost(req: Request, res: Response) {
-    const companyId = (req.user as any).id;
+    const companyId = (req.user as any).user.id;
 
     // Create a mutable copy of the body
     const bodyWithParsedDates = { ...req.body };
@@ -73,7 +73,7 @@ export class PostController {
   }
 
   static async updatePost(req: Request, res: Response) {
-    const companyId = (req.user as any).id;
+    const companyId = (req.user as any).user.id;
     const postId = parseInt(req.params.postId);
     if (isNaN(postId)) throw new ExpressError("Invalid post ID", 400);
 
