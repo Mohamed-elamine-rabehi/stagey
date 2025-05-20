@@ -88,7 +88,14 @@ export class PostController {
       bodyWithParsedDates.endDate = new Date(bodyWithParsedDates.endDate);
     }
 
-    const result = postCrudSchema.safeParse(bodyWithParsedDates); // <-- Validate the modified body
+    // Extract longitude and latitude from location, if present
+    if (bodyWithParsedDates.location) {
+      bodyWithParsedDates.longitude = bodyWithParsedDates.location.longitude;
+      bodyWithParsedDates.latitude = bodyWithParsedDates.location.latitude;
+      delete bodyWithParsedDates.location;
+    }
+
+    const result = postCrudSchema.safeParse(bodyWithParsedDates);
 
     if (!result.success) {
       throw new ExpressError("Validation error", 400, result.error.flatten());
@@ -96,6 +103,7 @@ export class PostController {
 
     res.json(await PostService.updatePost(postId, companyId, result.data));
   }
+
 
 
 
