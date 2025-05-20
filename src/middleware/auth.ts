@@ -11,9 +11,9 @@ export const authMiddleware = (role?: 'user' | 'company') => {
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as any;
-      req.user = decoded;
+      req.user = decoded.user;  // Store just the user part since we wrapped it in generateToken
 
-      if (role && decoded.user.role !== role) {
+      if (role && req.user.role !== role) {
         throw new ExpressError('Unauthorized access', 403);
       }
 

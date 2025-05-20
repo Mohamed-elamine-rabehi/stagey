@@ -103,13 +103,8 @@ export class PostController {
 
     res.json(await PostService.updatePost(postId, companyId, result.data));
   }
-
-
-
-
-
   static async deletePost(req: Request, res: Response) {
-    const companyId = (req.user as any).id;
+    const companyId = (req.user as any).id;  // Now we can access id directly since we stored decoded.user
     const postId = parseInt(req.params.postId);
     if (isNaN(postId)) throw new ExpressError("Invalid post ID", 400);
 

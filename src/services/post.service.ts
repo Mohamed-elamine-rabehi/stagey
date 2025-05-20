@@ -80,10 +80,10 @@ export class PostService {
   }
 
   static async getPostWithCompany(postId: number) {
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-      include: { company: true },
-    });
+      const post = await prisma.post.findUnique({
+        where: { id: postId },
+        include: { company: true },
+      });
 
     if (!post) {
       throw new ExpressError("Post not found", 404);
