@@ -80,10 +80,21 @@ export class PostService {
   }
 
   static async getPostWithCompany(postId: number) {
-      const post = await prisma.post.findUnique({
-        where: { id: postId },
-        include: { company: true },
-      });
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      include: {
+        company: {
+          select: {
+            companyName: true,
+            email: true,
+            website: true,
+            industry: true,
+            size: true,
+            location: true, // or address, depending on your schema
+          }
+        }
+      }
+    });
 
     if (!post) {
       throw new ExpressError("Post not found", 404);

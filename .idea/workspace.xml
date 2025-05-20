@@ -67,7 +67,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747672938860</updated>
       <workItem from="1747672940011" duration="19816000" />
-      <workItem from="1747728001906" duration="15972000" />
+      <workItem from="1747728001906" duration="19664000" />
     </task>
     <servers />
   </component>
@@ -81,6 +81,12 @@
           <url>file://$PROJECT_DIR$/src/index.ts</url>
           <line>2</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/controller/postController.ts</url>
+          <line>15</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
