@@ -28,11 +28,11 @@ export class PostController {
       ...req.query,
       page: req.query.page ? parseInt(req.query.page as string) : 1,
       startDate: req.query.startDate
-        ? new Date(req.query.startDate as string)
-        : undefined,
+          ? new Date(req.query.startDate as string)
+          : undefined,
       endDate: req.query.endDate
-        ? new Date(req.query.endDate as string)
-        : undefined,
+          ? new Date(req.query.endDate as string)
+          : undefined,
     });
 
     if (!result.success) {
@@ -50,7 +50,7 @@ export class PostController {
   }
 
   static async createPost(req: Request, res: Response) {
-    const companyId = (req.user as any).user.id;
+    const companyId = (req.user as any).id;
 
     // Create a mutable copy of the body
     const bodyWithParsedDates = { ...req.body };
@@ -73,7 +73,7 @@ export class PostController {
   }
 
   static async updatePost(req: Request, res: Response) {
-    const companyId = (req.user as any).user.id;
+    const companyId = (req.user as any).id;
     const postId = parseInt(req.params.postId);
     if (isNaN(postId)) throw new ExpressError("Invalid post ID", 400);
 
@@ -92,8 +92,7 @@ export class PostController {
     if (bodyWithParsedDates.location) {
       bodyWithParsedDates.longitude = bodyWithParsedDates.location.longitude;
       bodyWithParsedDates.latitude = bodyWithParsedDates.location.latitude;
-   delete bodyWithParsedDates.location;
-
+      delete bodyWithParsedDates.location;
     }
     const result = postCrudSchema.safeParse(bodyWithParsedDates);
 
@@ -103,6 +102,7 @@ export class PostController {
 
     res.json(await PostService.updatePost(postId, companyId, result.data));
   }
+
   static async deletePost(req: Request, res: Response) {
     const companyId = (req.user as any).id;  // Now we can access id directly since we stored decoded.user
     const postId = parseInt(req.params.postId);
@@ -111,8 +111,9 @@ export class PostController {
     await PostService.deletePost(postId, companyId);
     res.status(204).send();
   }
+
   static async fetchCompanyPosts(req: Request, res: Response) {
-    const companyId = (req.user as any).user.id; // Get companyId from authenticated user
+    const companyId = (req.user as any).id; // Get companyId from authenticated user
 
     // Get page from query parameters, default to 1 if not provided
     const page = req.query.page ? parseInt(req.query.page as string) : 1;
@@ -122,5 +123,4 @@ export class PostController {
 
     res.json(await PostService.fetchPostsByCompanyId(companyId, page));
   }
-
 }
