@@ -8,9 +8,10 @@ export class NotificationController {
   static async getUserNotifications(req: Request, res: Response) {
     const userId = (req.user as any).id;
     const page = req.query.page ? parseInt(req.query.page as string) : 1;
-
-    res.json(await NotificationService.getUserNotifications(userId, page));
+    const specialty = req.query.specialty as string | undefined;
+    res.json(await NotificationService.getUserNotifications(userId, page, specialty));
   }
+
 
   static async markAsRead(req: Request, res: Response) {
     const userId = (req.user as any).id;

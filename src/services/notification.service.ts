@@ -5,19 +5,24 @@ import prisma from "../prisma/client";
 import ExpressError from "../domain/Error";
 
 export class NotificationService {
-  static async getUserNotifications(userId: number, page: number = 1) {
+  static async getUserNotifications(userId: number, page: number = 1, specialty?: string) {
     const PAGE_SIZE = 10;
     const skip = (page - 1) * PAGE_SIZE;
 
+    const where: any = { userId };
+    if (specialty) {
+      where.post = { specialty };
+    }
+
     const [notifications, totalCount] = await Promise.all([
       prisma.notification.findMany({
-        where: { userId },
+        where,
         skip,
         take: PAGE_SIZE,
         orderBy: { createdAt: "desc" },
         include: { post: true },
       }),
-      prisma.notification.count({ where: { userId } }),
+      prisma.notification.count({ where }),
     ]);
 
     return {
