@@ -89,12 +89,12 @@ export class PostController {
     }
 
     // Extract longitude and latitude from location, if present
-   // if (bodyWithParsedDates.location) {
-   //   bodyWithParsedDates.longitude = bodyWithParsedDates.location.longitude;
-   //   bodyWithParsedDates.latitude = bodyWithParsedDates.location.latitude;
-   //   delete bodyWithParsedDates.location;
-   //
-   // }
+    if (bodyWithParsedDates.location) {
+      bodyWithParsedDates.longitude = bodyWithParsedDates.location.longitude;
+      bodyWithParsedDates.latitude = bodyWithParsedDates.location.latitude;
+   delete bodyWithParsedDates.location;
+
+    }
     const result = postCrudSchema.safeParse(bodyWithParsedDates);
 
     if (!result.success) {
