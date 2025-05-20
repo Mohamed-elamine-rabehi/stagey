@@ -33,6 +33,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       role: "companyName" in user ? "company" : "user",
+      specialty: "specialty" in user ? user.specialty : undefined,
     });
 
     const { password, createdAt, updatedAt, ...safeUser } = user;
@@ -66,6 +67,8 @@ export class AuthService {
       id: user.id,
       email: user.email,
       role: "user",
+      specialty: user.specialty,
+
     });
     console.log(token); // Debugging line
     return { token, user: { id: user.id, email: user.email } };
