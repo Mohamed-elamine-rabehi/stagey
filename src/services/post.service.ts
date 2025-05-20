@@ -88,8 +88,6 @@ export class PostService {
             companyName: true,
             email: true,
             website: true,
-            industry: true,
-            size: true,
             location: true, // or address, depending on your schema
           }
         }
