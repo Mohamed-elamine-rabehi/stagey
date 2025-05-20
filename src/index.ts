@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: '*', // allow requests from all origins (attacker's server)
-  methods: ['GET', 'POST', 'OPTIONS','PUT'],
+  methods: ['GET', 'POST', 'OPTIONS','PUT','DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.get("/", (req, res, next) => {
