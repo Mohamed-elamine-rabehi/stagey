@@ -51,7 +51,19 @@ export class PostController {
 
   static async createPost(req: Request, res: Response) {
     const companyId = (req.user as any).id;
-    const result = postCrudSchema.safeParse(req.body);
+
+    // Create a mutable copy of the body
+    const bodyWithParsedDates = { ...req.body };
+
+    // Parse date strings to Date objects
+    if (bodyWithParsedDates.startDate) {
+      bodyWithParsedDates.startDate = new Date(bodyWithParsedDates.startDate);
+    }
+    if (bodyWithParsedDates.endDate) {
+      bodyWithParsedDates.endDate = new Date(bodyWithParsedDates.endDate);
+    }
+
+    const result = postCrudSchema.safeParse(bodyWithParsedDates); // <-- Validate the modified body
 
     if (!result.success) {
       throw new ExpressError("Validation error", 400, result.error.flatten());
@@ -65,13 +77,28 @@ export class PostController {
     const postId = parseInt(req.params.postId);
     if (isNaN(postId)) throw new ExpressError("Invalid post ID", 400);
 
-    const result = postCrudSchema.safeParse(req.body);
+    // Create a mutable copy of the body
+    const bodyWithParsedDates = { ...req.body };
+
+    // Parse date strings to Date objects
+    if (bodyWithParsedDates.startDate) {
+      bodyWithParsedDates.startDate = new Date(bodyWithParsedDates.startDate);
+    }
+    if (bodyWithParsedDates.endDate) {
+      bodyWithParsedDates.endDate = new Date(bodyWithParsedDates.endDate);
+    }
+
+    const result = postCrudSchema.safeParse(bodyWithParsedDates); // <-- Validate the modified body
+
     if (!result.success) {
       throw new ExpressError("Validation error", 400, result.error.flatten());
     }
 
     res.json(await PostService.updatePost(postId, companyId, result.data));
   }
+
+
+
 
   static async deletePost(req: Request, res: Response) {
     const companyId = (req.user as any).id;
