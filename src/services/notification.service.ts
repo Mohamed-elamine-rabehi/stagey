@@ -20,7 +20,7 @@ export class NotificationService {
         skip,
         take: PAGE_SIZE,
         orderBy: { createdAt: "desc" },
-        include: { post: true },
+        include: { post: { include: { company: true } } },
       }),
       prisma.notification.count({ where }),
     ]);
