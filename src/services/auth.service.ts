@@ -107,10 +107,9 @@ export class AuthService {
       if (!decoded) {
         throw new ExpressError("Invalid token", 401);
       }
-
-      if (decoded.role === "user") {
+      if (decoded.user.role === "user") {
         return await prisma.user.findUnique({
-          where: { id: decoded.id },
+          where: { id: decoded.user.id },
           select: {
             id: true,
             email: true,
@@ -121,12 +120,14 @@ export class AuthService {
         });
       } else {
         return await prisma.company.findUnique({
-          where: { id: decoded.id },
+          where: { id: decoded.user.id },
           select: { id: true, email: true, companyName: true },
         });
-      }
-    } catch (error) {
+      }}
+ catch (error) {
       throw new ExpressError("Invalid token", 401);
     }
   }
 }
+
+
